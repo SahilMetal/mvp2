@@ -45,10 +45,33 @@ app.post('/teams', async (req, res) => {
     }
 })
 
+app.put('/teams', async (req, res) => {
+    const query = { _id: req.body._id }; // update this comment
+    const newText = { importable: req.body.importable };
+    try {
+        await Team.findOneAndUpdate(query, newText)
+        res.status(200).send('Message updated successfully')
+    } catch (err) {
+        console.error('Error updating message', err)
+        res.send('Error updating')
+    }
+})
+
+app.delete('/teams', async (req, res) => {
+    const query = req.body._id;
+    try {
+        await Team.findOneAndDelete(query)
+        res.status(200).send('Message deleted')
+    } catch (err) {
+        console.log('Error deleting message', err)
+        res.send('Error deleting')
+    }
+})
+
 mongoose.connect(DB_URI)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.log(err));
 
 app.listen(PORT, () => {
-    console.log('mvp2 listening on ', PORT)
+    console.log('mvp2 listening on', PORT)
 })
