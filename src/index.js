@@ -6,6 +6,8 @@ const App = () => {
     
     const [chosenTier, setChosenTier] = useState('');
     const [chosenQuery, setChosenQuery] = useState('');
+    const [chosenEntry, setChosenEntry] = useState('');
+    const [chosenDelete, setChosenDelete] = useState('');
     const [teamData, setTeamData] = useState([]);
 
     const searchRequest = () => {
@@ -16,15 +18,44 @@ const App = () => {
             .then((teams) => {
                 const result = [];
                 for (let i  = 0; i < teams.length; i++) {
-                    if (teams[i].title === chosenQuery) { //sudo search function
+                    if (chosenTier === 'All') { 
                         result.push(teams[i])
+                        console.log('psuhed all', result)
+                    } else if (teams[i].title === chosenQuery || teams[i].tier === chosenTier || teams[i].tier === 'All') {
+                        result.push(teams[i])
+                        console.log('psuhed notmal')
                     }
                 }
-                console.log(teams, 'teams')
+                console.log(result, 'teams')
                 setTeamData(result)
             })
     };
 
+    const postRequest = () => {
+        fetch('http://localhost:3000/teams', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: chosenEntry,
+                //todo rest
+                //make multiple entry forms without copy paste?
+            })
+        })
+        console.log('hello')
+    };
+
+    const deleteRequest = () => {
+        fetch('http://localhost:3000/teams', {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ _id: chosenDelete })
+        }).then(console.log('message deleted'))
+        //deletes only first entry
+    }
     return (
         <div className='app'>
             <nav>
@@ -47,6 +78,7 @@ const App = () => {
                                 onChange={(e) => setChosenTier(e.target.value)}
                             >
                                 <option value={null}>Select a Tier</option>
+                                <option value='All'>Search All Tiers</option>
                                 <option value='Ubers'>Ubers</option>
                                 <option value='OU'>OU</option>
                                 <option value='UU'>UU</option>
@@ -61,7 +93,7 @@ const App = () => {
                                     <input
                                         className='form'
                                         type='text'
-                                        placeholder='Search: Tags, creators, or title'
+                                        placeholder='Search by title'
                                         value={chosenQuery || ''}
                                         onChange={(e) => setChosenQuery(e.target.value)}
                                     />
@@ -73,7 +105,7 @@ const App = () => {
                             <button onClick={searchRequest}>Search</button>
                         </li>
                     </ul>
-                    <table style = {{ width: 300}}>
+                    <table style = {{ width: 500}}>
                         <tbody>
                             <tr>
                                 <th>Title</th>
@@ -97,9 +129,34 @@ const App = () => {
                             )
                         })}
                     </table>
+                    <h4>Submit your teams to the database below:</h4>
+                        <form>
+                            <label>
+                                <input
+                                    className='form'
+                                    type='text'
+                                    placeholder='Enter title'
+                                    value={chosenEntry || ''}
+                                    onChange={(e) => setChosenEntry(e.target.value)}
+                                />
+                            </label>
+                        </form>
+                        <button onClick={postRequest}>Submit</button>
                 </div>
-                
             </div>
+            <h4>Delete a team from the database below:</h4>
+            <form>
+                <label>
+                    <input
+                        className='form'
+                        type='text'
+                        placeholder='Enter _id'
+                        value={chosenDelete}
+                        onChange={(e) => setChosenDelete(e.target.value)}
+                    />
+                </label>
+            </form>
+            <button onClick={deleteRequest}>Submit</button>
         </div>
     );
 };
