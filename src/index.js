@@ -6,7 +6,11 @@ const App = () => {
     
     const [chosenTier, setChosenTier] = useState('');
     const [chosenQuery, setChosenQuery] = useState('');
-    const [chosenEntry, setChosenEntry] = useState('');
+    const [chosenEntryTitle, setChosenEntryTitle] = useState('');
+    const [chosenEntryTier, setChosenEntryTier] = useState('');
+    const [chosenEntryCreator, setChosenEntryCreator] = useState('');
+    const [chosenEntryTags, setChosenEntryTags] = useState([]);
+    const [chosenEntryImport, setChosenEntryImport] = useState('');
     const [chosenDelete, setChosenDelete] = useState('');
     const [teamData, setTeamData] = useState([]);
 
@@ -33,13 +37,16 @@ const App = () => {
 
     const postRequest = () => {
         fetch('http://localhost:3000/teams', {
-            method: "POST",
+            method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                title: chosenEntry,
-                //todo rest
+                title: chosenEntryTitle,
+                tier: chosenEntryTier,
+                creator: chosenEntryCreator,
+                tags: chosenEntryTags,
+                importable: chosenEntryImport,
                 //make multiple entry forms without copy paste?
             })
         })
@@ -54,8 +61,9 @@ const App = () => {
             },
             body: JSON.stringify({ _id: chosenDelete })
         }).then(console.log('message deleted'))
-        //deletes only first entry
     }
+
+    
     return (
         <div className='app'>
             <nav>
@@ -136,8 +144,36 @@ const App = () => {
                                     className='form'
                                     type='text'
                                     placeholder='Enter title'
-                                    value={chosenEntry || ''}
-                                    onChange={(e) => setChosenEntry(e.target.value)}
+                                    value={chosenEntryTitle || ''}
+                                    onChange={(e) => setChosenEntryTitle(e.target.value)}
+                                />
+                                <input
+                                    className='form'
+                                    type='text'
+                                    placeholder='Enter tier'
+                                    value={chosenEntryTier || ''}
+                                    onChange={(e) => setChosenEntryTier(e.target.value)}
+                                />
+                                <input
+                                    className='form'
+                                    type='text'
+                                    placeholder='Enter creator'
+                                    value={chosenEntryCreator || ''}
+                                    onChange={(e) => setChosenEntryCreator(e.target.value)}
+                                />
+                                <input
+                                    className='form'
+                                    type='text'
+                                    placeholder='Enter tags: tag1, tag2, etc    '
+                                    value={chosenEntryTags || []}
+                                    onChange={(e) => setChosenEntryTags(e.target.value)}
+                                />
+                                <input
+                                    className='form'
+                                    type='text'
+                                    placeholder='Enter pokepaste link'
+                                    value={chosenEntryImport || ''}
+                                    onChange={(e) => setChosenEntryImport(e.target.value)}
                                 />
                             </label>
                         </form>
