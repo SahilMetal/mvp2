@@ -47,11 +47,28 @@ const App = () => {
                 creator: chosenEntryCreator,
                 tags: chosenEntryTags,
                 importable: chosenEntryImport,
-                //make multiple entry forms without copy paste?
             })
         })
-        console.log('hello')
+        console.log('message posted to db')
     };
+
+    const updateRequest = () => {
+        fetch('http://localhost:3000/teams', {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                _id: chosenDelete,
+                title: chosenEntryTitle,
+                tier: chosenEntryTier,
+                creator: chosenEntryCreator,
+                tags: chosenEntryTags,
+                importable: chosenEntryImport,
+            })
+        })
+        console.log('message updated')
+    }
 
     const deleteRequest = () => {
         fetch('http://localhost:3000/teams', {
@@ -169,8 +186,6 @@ const App = () => {
                                     onChange={(e) => setChosenEntryTags(e.target.value)}
                                 />
                                 <input
-                                    className='form'
-                                    type='text'
                                     placeholder='Enter pokepaste link'
                                     value={chosenEntryImport || ''}
                                     onChange={(e) => setChosenEntryImport(e.target.value)}
@@ -178,6 +193,7 @@ const App = () => {
                             </label>
                         </form>
                         <button onClick={postRequest}>Submit</button>
+                        <button onClick={updateRequest}>Update</button>
                 </div>
             </div>
             <h4>Delete a team from the database below:</h4>
@@ -192,7 +208,7 @@ const App = () => {
                     />
                 </label>
             </form>
-            <button onClick={deleteRequest}>Submit</button>
+            <button onClick={deleteRequest}>Delete</button>
         </div>
     );
 };
